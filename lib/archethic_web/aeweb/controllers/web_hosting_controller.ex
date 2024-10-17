@@ -28,13 +28,14 @@ defmodule ArchethicWeb.AEWeb.WebHostingController do
     cache_headers = get_cache_headers(conn)
 
     # Normalise/downcase url_paths
-    params = Map.update!(
-      params,
-      "url_path",
-      fn url ->
-        Enum.map(url, &String.downcase/1)
-      end
-    )
+    params =
+      Map.update!(
+        params,
+        "url_path",
+        fn url ->
+          Enum.map(url, &String.downcase/1)
+        end
+      )
 
     case get_website(params, cache_headers) do
       {:ok, file_content, encoding, mime_type, cached?, etag} ->

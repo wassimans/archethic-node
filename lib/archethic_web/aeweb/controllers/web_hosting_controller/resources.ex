@@ -79,7 +79,7 @@ defmodule ArchethicWeb.AEWeb.WebHostingController.Resources do
   defp get_file(metadata, url_path) do
     resource_path = Enum.join(url_path, "/")
 
-    metadata = normalise_metadata(metadata)
+    metadata = normalise_downcase_key(metadata)
 
     case Map.get(metadata, resource_path) do
       nil ->
@@ -143,7 +143,7 @@ defmodule ArchethicWeb.AEWeb.WebHostingController.Resources do
 
             {:ok, decoded_content} = Jason.decode(tx_content)
 
-            {:ok, res_content} = access(decoded_content, resource_path)
+            {:ok, res_content} = decoded_content |> normalise_downcase_key() |> access(resource_path)
 
             acc <> res_content
           end)
@@ -166,8 +166,6 @@ defmodule ArchethicWeb.AEWeb.WebHostingController.Resources do
 
   @spec access(map(), key :: binary(), any()) :: {:error, :file_not_found} | {:ok, any()}
   defp access(map, key, default \\ :file_not_found) do
-    map = normalise_metadata(map)
-
     case Map.get(map, key, default) do
       :file_not_found ->
         {:error, :file_not_found}
@@ -214,10 +212,9 @@ defmodule ArchethicWeb.AEWeb.WebHostingController.Resources do
     end)
   end
 
-  # Normalise/downcase metadata keys to insure case-insensitive
-  @spec normalise_metadata(metadata :: map()) :: map()
-  defp normalise_metadata(metadata) do
-    Enum.map(metadata, fn {key, value} ->
+  # Normalise/downcase map keys
+  defp normalise_downcase_key(map) do
+    Enum.map(map, fn {key, value} ->
       {String.downcase(key), value}
     end)
     |> Map.new()

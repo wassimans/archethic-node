@@ -79,6 +79,8 @@ defmodule ArchethicWeb.AEWeb.WebHostingController.Resources do
   defp get_file(metadata, url_path) do
     resource_path = Enum.join(url_path, "/")
 
+    metadata = normalise_metadata(metadata)
+
     case Map.get(metadata, resource_path) do
       nil ->
         if is_a_directory?(metadata, resource_path) do
@@ -164,6 +166,8 @@ defmodule ArchethicWeb.AEWeb.WebHostingController.Resources do
 
   @spec access(map(), key :: binary(), any()) :: {:error, :file_not_found} | {:ok, any()}
   defp access(map, key, default \\ :file_not_found) do
+    map = normalise_metadata(map)
+
     case Map.get(map, key, default) do
       :file_not_found ->
         {:error, :file_not_found}
@@ -208,5 +212,14 @@ defmodule ArchethicWeb.AEWeb.WebHostingController.Resources do
     Enum.any?(Map.keys(metadata), fn key ->
       String.starts_with?(key, file_path)
     end)
+  end
+
+  # Normalise/downcase metadata keys to insure case-insensitive
+  @spec normalise_metadata(metadata :: map()) :: map()
+  defp normalise_metadata(metadata) do
+    Enum.map(metadata, fn {key, value} ->
+      {String.downcase(key), value}
+    end)
+    |> Map.new()
   end
 end

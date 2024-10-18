@@ -143,7 +143,8 @@ defmodule ArchethicWeb.AEWeb.WebHostingController.Resources do
 
             {:ok, decoded_content} = Jason.decode(tx_content)
 
-            {:ok, res_content} = decoded_content |> normalise_downcase_key() |> access(resource_path)
+            {:ok, res_content} =
+              decoded_content |> normalise_downcase_key() |> access(resource_path)
 
             acc <> res_content
           end)

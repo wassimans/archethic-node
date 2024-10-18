@@ -390,6 +390,7 @@ defmodule ArchethicWeb.AEWeb.WebHostingControllerTest do
     end
 
     test "should downcase url_path before processing", %{conn: conn} do
+
       conn1 =
         get(
           conn,

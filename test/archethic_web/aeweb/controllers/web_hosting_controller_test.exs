@@ -385,11 +385,21 @@ defmodule ArchethicWeb.AEWeb.WebHostingControllerTest do
 
     test "should downcase url_path before processing", %{conn: conn} do
       # Test with mixed-case URL path
-      conn1 = get(conn, "/aeweb/0000225496a380d5005cb68374e9b8b45d7e0f505a42f8cd61cbd43c3684c5cbacba/image.png")
+      conn1 =
+        get(
+          conn,
+          "/aeweb/0000225496a380d5005cb68374e9b8b45d7e0f505a42f8cd61cbd43c3684c5cbacba/image.png"
+        )
+
       assert response(conn1, 200)
 
       # Make sure the downcased version works as well
-      conn2 = get(conn, "/aeweb/0000225496a380d5005cb68374e9b8b45d7e0f505a42f8cd61cbd43c3684c5cbacba/IMage.png")
+      conn2 =
+        get(
+          conn,
+          "/aeweb/0000225496a380d5005cb68374e9b8b45d7e0f505a42f8cd61cbd43c3684c5cbacba/IMage.png"
+        )
+
       assert response(conn2, 200)
     end
 
